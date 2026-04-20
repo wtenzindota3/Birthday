@@ -7,46 +7,46 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body {
-    margin: 0;
-    font-family: sans-serif;
-    background: black;
-    color: white;
-    text-align: center;
-    overflow: hidden;
+body{
+    margin:0;
+    font-family:sans-serif;
+    background:black;
+    color:white;
+    text-align:center;
+    overflow:hidden;
 }
 
-.container {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-    width: 90%;
+.container{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:90%;
 }
 
-button {
-    padding: 10px 18px;
-    margin: 10px;
-    border-radius: 20px;
-    border: none;
-    cursor: pointer;
+button{
+    padding:10px 18px;
+    margin:10px;
+    border:none;
+    border-radius:20px;
+    cursor:pointer;
 }
 
-input {
-    padding: 10px;
-    border-radius: 10px;
+input{
+    padding:10px;
+    border-radius:10px;
 }
 
-.heart {
-    position: absolute;
-    font-size: 30px;
-    cursor: pointer;
+.heart{
+    position:absolute;
+    font-size:30px;
+    cursor:pointer;
 }
 
-img {
-    width: 200px;
-    border-radius: 12px;
-    margin-top: 10px;
+img{
+    width:200px;
+    border-radius:12px;
+    margin-top:10px;
 }
 </style>
 
@@ -80,22 +80,19 @@ function check(){
 // ---------------- GAME 1 ----------------
 function game1(){
     document.getElementById("main").innerHTML =
-    "<h2>Level 1 ❤️</h2><p>Catch the heart… it gets easier over time</p>";
+    "<h2>Level 1 ❤️</h2><p>Catch the heart</p>";
 
     let heart = document.createElement("div");
     heart.className = "heart";
     heart.innerHTML = "❤️";
     document.body.appendChild(heart);
 
-    let interval = setInterval(move, 800);
-
-    function move(){
+    let interval = setInterval(()=>{
         heart.style.top = Math.random()*window.innerHeight+"px";
         heart.style.left = Math.random()*window.innerWidth+"px";
-    }
+    },800);
 
-    setTimeout(()=>{ clearInterval(interval); interval = setInterval(move,1200); },10000);
-    setTimeout(()=>{ clearInterval(interval); interval = setInterval(move,2000); },18000);
+    setTimeout(()=>{ clearInterval(interval); },18000);
 
     heart.onclick = ()=>{
         heart.remove();
@@ -107,9 +104,9 @@ function game1(){
 function game2(){
     document.getElementById("main").innerHTML = `
     <h2>Level 2 😏</h2>
-    <p>Who wins in Mobile Legends?</p>
+    <p>Who carries when we play Mobile Legends?</p>
     <button onclick="wrong()">You</button>
-    <button onclick="game3()">Us 😎</button>
+    <button onclick="photoQ()">Us 😎</button>
     `;
 }
 
@@ -117,49 +114,11 @@ function wrong(){
     alert("Try again 😂");
 }
 
-// ---------------- GAME 3 ----------------
-function game3(){
-    document.getElementById("main").innerHTML = `
-    <h2>Level 3 🎮 Memory Path</h2>
-    <button onclick="path1()">Start</button>
-    `;
-}
-
-function path1(){
-    document.getElementById("main").innerHTML = `
-    <h2>Pick a memory</h2>
-    <button onclick="wrong1()">First meeting</button>
-    <button onclick="path2()">Mobile Legends</button>
-    `;
-}
-
-function wrong1(){ alert("Not that one 😭"); }
-
-function path2(){
-    document.getElementById("main").innerHTML = `
-    <h2>Good 😌</h2>
-    <img src="photo1.jpg">
-    <p>One of our memories</p>
-
-    <button onclick="path3()">Next</button>
-    `;
-}
-
-function path3(){
-    document.getElementById("main").innerHTML = `
-    <h2>Almost there 👀</h2>
-    <img src="photo2.jpg">
-    <p>Another memory unlocked</p>
-
-    <button onclick="askPhoto()">Continue</button>
-    `;
-}
-
 // ---------------- PHOTO QUESTION ----------------
-function askPhoto(){
+function photoQ(){
     document.getElementById("main").innerHTML = `
-    <h2>Random question 😏</h2>
-    <p>Can I see your photo?</p>
+    <h2>Quick question 😏</h2>
+    <p>Can you please send me a photo of yours?</p>
 
     <button onclick="yesPhoto()">Yes</button>
     <button onclick="noPhoto()">No</button>
@@ -168,14 +127,10 @@ function askPhoto(){
     `;
 }
 
+// ONLY SHOWS REACTION, DOES NOT AUTO SKIP
 function noPhoto(){
     document.getElementById("react").innerHTML =
-    "Hmm 😌 I expected that…";
-
-    setTimeout(()=>{
-        document.getElementById("react").innerHTML =
-        "But I think you’ll say yes anyway 👀";
-    },1500);
+    "Hmm 😌 okay okay";
 }
 
 function yesPhoto(){
@@ -185,16 +140,16 @@ function yesPhoto(){
 // ---------------- STORY ----------------
 function story(){
     document.getElementById("main").innerHTML = `
-    <h2>I knew it 😌</h2>
+    <h2>...</h2>
 
-    <img src="photo3.jpg">
+    <img src="photo1.jpg">
 
     <p style="line-height:1.6">
-    You act like you don’t care sometimes… but I know you do 😭<br><br>
+    You’re actually one of the most real people I’ve met.<br><br>
 
-    You’re my first Chinese friend — and honestly one of a kind.<br><br>
+    My first Chinese friend — and honestly one of a kind.<br><br>
 
-    Playing Mobile Legends with you, joking around, losing, winning… it’s always fun.<br><br>
+    Playing Mobile Legends with you, joking, losing, winning… it’s always fun.<br><br>
 
     I’m genuinely grateful for you.<br><br>
 
@@ -213,7 +168,7 @@ function story(){
 function final(){
     document.getElementById("main").innerHTML = `
     <h2>Final Message 💌</h2>
-    <p>You didn’t just click… you experienced everything.</p>
+    <p>You went through everything properly.</p>
     <p>That actually means something.</p>
     <h3>You’re appreciated ❤️</h3>
     `;
