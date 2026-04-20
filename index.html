@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>For You 🎂</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: black;
+    color: white;
+    text-align: center;
+    overflow: hidden;
+}
+
+.container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+}
+
+button {
+    padding: 10px 20px;
+    margin-top: 20px;
+    border-radius: 20px;
+    border: none;
+    background: white;
+    color: black;
+}
+
+input {
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+}
+
+img {
+    width: 200px;
+    border-radius: 15px;
+    margin-top: 15px;
+}
+
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.heart {
+    font-size: 40px;
+    position: absolute;
+    cursor: pointer;
+}
+</style>
+
+</head>
+
+<body>
+
+<canvas id="stars"></canvas>
+
+<audio autoplay loop>
+    <source src="your-song.mp3" type="audio/mpeg">
+</audio>
+
+<div class="container" id="main">
+    <h2>Enter Password 🔐</h2>
+    <input type="password" id="password"><br>
+    <button onclick="checkPassword()">Enter</button>
+</div>
+
+<script>
+
+// ===== SETTINGS =====
+const correctPassword = "0508";
+const unlockDate = new Date("2026-04-25T00:00:00");
+
+// ===== PASSWORD =====
+function checkPassword() {
+    if (document.getElementById("password").value === correctPassword) {
+        checkTime();
+    } else {
+        alert("Wrong password 👀");
+    }
+}
+
+// ===== TIME LOCK =====
+function checkTime() {
+    if (new Date() < unlockDate) {
+        document.getElementById("main").innerHTML =
+        "<h2>Wait for the right moment ⏳</h2>";
+    } else {
+        startGame();
+    }
+}
+
+// ===== MINI GAME =====
+function startGame() {
+    document.getElementById("main").innerHTML =
+    "<h2>Catch the heart ❤️ to unlock</h2>";
+
+    let heart = document.createElement("div");
+    heart.innerHTML = "❤️";
+    heart.className = "heart";
+    document.body.appendChild(heart);
+
+    moveHeart(heart);
+
+    heart.onclick = () => {
+        heart.remove();
+        startStory();
+    };
+}
+
+function moveHeart(el) {
+    setInterval(() => {
+        el.style.top = Math.random() * window.innerHeight + "px";
+        el.style.left = Math.random() * window.innerWidth + "px";
+    }, 800);
+}
+
+// ===== STORY =====
+let messages = [
+"Hey...",
+"I wanted to do something different for you.",
+"Because you’re not just anyone to me.",
+"You actually matter to me… a lot.",
+"I’m really grateful to have you in my life.",
+"You make things feel easier without even trying.",
+"And honestly… I don’t say this enough.",
+"So today, I just want you to feel special.",
+"Happy Birthday 🎂"
+];
+
+let images = [
+"photo1.jpg",
+"photo2.jpg",
+"photo3.jpg"
+];
+
+let index = 0;
+
+function startStory() {
+    document.getElementById("main").innerHTML =
+    `<h1 id="text"></h1><img id="img" style="display:none;"><br><button onclick="next()">Next</button>`;
+    typeText();
+}
+
+function typeText() {
+    let text = messages[index];
+    let i = 0;
+    let display = "";
+
+    function typing() {
+        if (i < text.length) {
+            display += text[i];
+            document.getElementById("text").innerHTML = display;
+            i++;
+            setTimeout(typing, 40);
+        } else {
+            showImage();
+        }
+    }
+    typing();
+}
+
+function showImage() {
+    if (images[index]) {
+        let img = document.getElementById("img");
+        img.src = images[index];
+        img.style.display = "block";
+    }
+}
+
+function next() {
+    index++;
+    if (index < messages.length) {
+        document.getElementById("img").style.display = "none";
+        typeText();
+    } else {
+        finalLetter();
+    }
+}
+
+// ===== FINAL LETTER =====
+function finalLetter() {
+    document.getElementById("main").innerHTML = `
+    <h2>One last thing...</h2>
+    <p style="line-height:1.6">
+    I just want you to know how genuinely grateful I am to have you in my life.<br><br>
+    You bring a kind of energy that makes things feel lighter, calmer, and just better.<br><br>
+    I hope this year gives you happiness, peace, and everything you've been wishing for.<br><br>
+    You deserve it, truly.<br><br>
+    Happy Birthday once again 🎂❤️<br><br>
+    — Tenzin
+    </p>
+    `;
+}
+
+// ===== STARS =====
+const canvas = document.getElementById("stars");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let stars = Array.from({length:120}, () => ({
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height,
+    r: Math.random()*1.5
+}));
+
+function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle="white";
+    stars.forEach(s=>{
+        ctx.beginPath();
+        ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+        ctx.fill();
+    });
+    requestAnimationFrame(draw);
+}
+draw();
+
+</script>
+
+</body>
+</html>
