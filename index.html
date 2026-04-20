@@ -77,28 +77,24 @@ function check(){
     }
 }
 
-// ---------------- GAME 1 (BALANCED HEART) ----------------
+// ---------------- GAME 1 ----------------
 function game1(){
     document.getElementById("main").innerHTML =
-    "<h2>Level 1: Catch the heart ❤️</h2><p>It gets easier over time...</p>";
+    "<h2>Level 1 ❤️</h2><p>Catch the heart… it gets easier over time</p>";
 
     let heart = document.createElement("div");
     heart.className = "heart";
     heart.innerHTML = "❤️";
     document.body.appendChild(heart);
 
-    let interval = setInterval(()=>{
-        heart.style.top = Math.random()*window.innerHeight+"px";
-        heart.style.left = Math.random()*window.innerWidth+"px";
-    }, 800);
-
-    setTimeout(()=>{ clearInterval(interval); interval = setInterval(move,1200); },10000);
+    let interval = setInterval(move, 800);
 
     function move(){
         heart.style.top = Math.random()*window.innerHeight+"px";
         heart.style.left = Math.random()*window.innerWidth+"px";
     }
 
+    setTimeout(()=>{ clearInterval(interval); interval = setInterval(move,1200); },10000);
     setTimeout(()=>{ clearInterval(interval); interval = setInterval(move,2000); },18000);
 
     heart.onclick = ()=>{
@@ -111,9 +107,9 @@ function game1(){
 function game2(){
     document.getElementById("main").innerHTML = `
     <h2>Level 2 😏</h2>
-    <p>Who is better in Mobile Legends?</p>
+    <p>Who wins in Mobile Legends?</p>
     <button onclick="wrong()">You</button>
-    <button onclick="correct()">Us 😎</button>
+    <button onclick="game3()">Us 😎</button>
     `;
 }
 
@@ -121,53 +117,68 @@ function wrong(){
     alert("Try again 😂");
 }
 
-function correct(){
-    game3();
-}
-
 // ---------------- GAME 3 ----------------
 function game3(){
-    document.getElementById("main").innerHTML =
-    "<h2>Find the hidden surprise 👀</h2>";
-
-    let box = document.createElement("div");
-    box.style.position = "absolute";
-    box.style.width = "40px";
-    box.style.height = "40px";
-    box.style.top = Math.random()*window.innerHeight+"px";
-    box.style.left = Math.random()*window.innerWidth+"px";
-    box.style.background = "transparent";
-
-    document.body.appendChild(box);
-
-    box.onclick = ()=>{
-        box.remove();
-        choice();
-    };
+    document.getElementById("main").innerHTML = `
+    <h2>Level 3 🎮 Memory Path</h2>
+    <button onclick="path1()">Start</button>
+    `;
 }
 
-// ---------------- CHOICE ----------------
-function choice(){
+function path1(){
     document.getElementById("main").innerHTML = `
-    <h2>Can I send you my picture? 📸</h2>
-    <button onclick="yes()">Yes</button>
-    <button onclick="no()">No</button>
+    <h2>Pick a memory</h2>
+    <button onclick="wrong1()">First meeting</button>
+    <button onclick="path2()">Mobile Legends</button>
+    `;
+}
+
+function wrong1(){ alert("Not that one 😭"); }
+
+function path2(){
+    document.getElementById("main").innerHTML = `
+    <h2>Good 😌</h2>
+    <img src="photo1.jpg">
+    <p>One of our memories</p>
+
+    <button onclick="path3()">Next</button>
+    `;
+}
+
+function path3(){
+    document.getElementById("main").innerHTML = `
+    <h2>Almost there 👀</h2>
+    <img src="photo2.jpg">
+    <p>Another memory unlocked</p>
+
+    <button onclick="askPhoto()">Continue</button>
+    `;
+}
+
+// ---------------- PHOTO QUESTION ----------------
+function askPhoto(){
+    document.getElementById("main").innerHTML = `
+    <h2>Random question 😏</h2>
+    <p>Can I see your photo?</p>
+
+    <button onclick="yesPhoto()">Yes</button>
+    <button onclick="noPhoto()">No</button>
+
     <p id="react"></p>
     `;
 }
 
-let noCount = 0;
+function noPhoto(){
+    document.getElementById("react").innerHTML =
+    "Hmm 😌 I expected that…";
 
-function no(){
-    noCount++;
-    let r = document.getElementById("react");
-
-    if(noCount === 1) r.innerHTML = "Hmm 😌";
-    else if(noCount === 2) r.innerHTML = "Be nice 😭";
-    else r.innerHTML = "Okay okay I know you want to say yes 👀";
+    setTimeout(()=>{
+        document.getElementById("react").innerHTML =
+        "But I think you’ll say yes anyway 👀";
+    },1500);
 }
 
-function yes(){
+function yesPhoto(){
     story();
 }
 
@@ -176,18 +187,20 @@ function story(){
     document.getElementById("main").innerHTML = `
     <h2>I knew it 😌</h2>
 
+    <img src="photo3.jpg">
+
     <p style="line-height:1.6">
-    You act tough but I know you’re actually soft 😭<br><br>
+    You act like you don’t care sometimes… but I know you do 😭<br><br>
 
-    You’re my first Chinese friend — and honestly one of the realest people I know.<br><br>
+    You’re my first Chinese friend — and honestly one of a kind.<br><br>
 
-    Playing Mobile Legends with you, joking, losing, winning… it’s always fun.<br><br>
-
-    You’re one of a kind.<br><br>
+    Playing Mobile Legends with you, joking around, losing, winning… it’s always fun.<br><br>
 
     I’m genuinely grateful for you.<br><br>
 
-    HAPPY BIRTHDAY 🎂 and I LOVE YOU GURL <3;<br><br>
+    You make things feel lighter without even trying.<br><br>
+
+    Happy Birthday 🎂<br><br>
 
     — Tenzin
     </p>
@@ -200,9 +213,9 @@ function story(){
 function final(){
     document.getElementById("main").innerHTML = `
     <h2>Final Message 💌</h2>
-    <p>You didn’t just click buttons… you actually went through it.</p>
-    <p>That means something.</p>
-    <h3>You’re appreciated more than you think ❤️</h3>
+    <p>You didn’t just click… you experienced everything.</p>
+    <p>That actually means something.</p>
+    <h3>You’re appreciated ❤️</h3>
     `;
 }
 
