@@ -1,138 +1,199 @@
-<script>
+<!DOCTYPE html>
 
-// ===== FLOW CONTROL =====
-let stage = 0;
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>For You 🎂</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-function startGame() {
-    stage1();
+<style>
+body {
+    margin: 0;
+    font-family: sans-serif;
+    background: black;
+    color: white;
+    text-align: center;
+    overflow: hidden;
 }
 
-// ===== STAGE 1: HEART CATCH =====
-function stage1() {
-    document.getElementById("main").innerHTML =
-    "<h2>Level 1: Catch me ❤️</h2>";
+.container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 90%;
+}
+
+button {
+    padding: 10px 18px;
+    border-radius: 20px;
+    border: none;
+    margin: 10px;
+    cursor: pointer;
+}
+
+input {
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.heart {
+    position: absolute;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+img {
+    width: 200px;
+    border-radius: 12px;
+    margin-top: 10px;
+}
+</style>
+
+</head>
+
+<body>
+
+<audio autoplay loop>
+    <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<div class="container" id="main">
+    <h2>Enter Password 🔐</h2>
+    <input type="password" id="pass">
+    <br>
+    <button onclick="check()">Enter</button>
+</div>
+
+<script>
+
+const password = "2142006";
+
+// ---------- PASSWORD ----------
+function check(){
+    if(document.getElementById("pass").value === password){
+        game1();
+    } else {
+        alert("Wrong 👀");
+    }
+}
+
+// ---------- GAME 1: HARD HEART ----------
+function game1(){
+    document.getElementById("main").innerHTML = "<h2>Catch the heart... but it's fast ❤️</h2>";
 
     let heart = document.createElement("div");
-    heart.innerHTML = "❤️";
     heart.className = "heart";
+    heart.innerHTML = "❤️";
     document.body.appendChild(heart);
 
-    moveHeart(heart);
+    setInterval(()=>{
+        heart.style.top = Math.random()*window.innerHeight+"px";
+        heart.style.left = Math.random()*window.innerWidth+"px";
+    },400);
 
     heart.onclick = () => {
         heart.remove();
-        stage2();
+        game2();
     };
 }
 
-function moveHeart(el) {
-    setInterval(() => {
-        el.style.top = Math.random() * window.innerHeight + "px";
-        el.style.left = Math.random() * window.innerWidth + "px";
-    }, 600);
+// ---------- GAME 2: QUIZ ----------
+function game2(){
+    document.getElementById("main").innerHTML = `
+    <h2>Quick question 😏</h2>
+    <p>Who wins in Mobile Legends when we play?</p>
+    <button onclick="wrong()">You</button>
+    <button onclick="correct()">Us 😎</button>
+    `;
+
 }
 
-// ===== STAGE 2: MEMORY QUIZ =====
-function stage2() {
+function wrong(){
+    alert("Hmm try again 😂");
+}
+
+function correct(){
+    game3();
+}
+
+// ---------- GAME 3: SECRET CLICK ----------
+function game3(){
+    document.getElementById("main").innerHTML = "<h2>Find the hidden surprise 👀</h2>";
+
+    let box = document.createElement("div");
+    box.style.position = "absolute";
+    box.style.width = "40px";
+    box.style.height = "40px";
+    box.style.top = Math.random()*window.innerHeight+"px";
+    box.style.left = Math.random()*window.innerWidth+"px";
+    box.style.background = "transparent";
+    document.body.appendChild(box);
+
+    box.onclick = ()=>{
+        box.remove();
+        choice();
+    }
+}
+
+// ---------- CHOICE ----------
+function choice(){
     document.getElementById("main").innerHTML = `
-    <h2>Level 2: Answer this 😏</h2>
-    <p>What makes you happiest?</p>
-    <button onclick="wrong()">Food</button>
-    <button onclick="wrong()">Sleep</button>
-    <button onclick="correct()">Me 😌</button>
+    <h2>Can I send you my picture? 📸</h2>
+    <button onclick="yes()">Yes</button>
+    <button onclick="no()">No</button>
     `;
 }
 
-function wrong() {
-    alert("Hmm… try again 👀");
-}
-
-function correct() {
-    stage3();
-}
-
-// ===== STAGE 3: FIND SECRET =====
-function stage3() {
-    document.getElementById("main").innerHTML =
-    "<h2>Level 3: Find the hidden surprise 👀</h2>";
-
-    let secret = document.createElement("div");
-    secret.style.position = "absolute";
-    secret.style.top = Math.random() * window.innerHeight + "px";
-    secret.style.left = Math.random() * window.innerWidth + "px";
-    secret.style.width = "30px";
-    secret.style.height = "30px";
-    secret.style.background = "transparent";
-
-    document.body.appendChild(secret);
-
-    secret.onclick = () => {
-        secret.remove();
-        startStory();
-    };
-}
-
-// ===== STORY (UPGRADED FEEL) =====
-let messages = [
-"You made it…",
-"Most people wouldn’t even try this far.",
-"But you did.",
-"And that’s exactly why this is for you.",
-"I don’t say this enough...",
-"But I’m genuinely grateful for you.",
-"You’ve made my life better in ways you probably don’t even realize.",
-"And I’ll always appreciate that.",
-"Happy Birthday 🎂"
-];
-
-let index = 0;
-
-function startStory() {
-    document.getElementById("main").innerHTML =
-    `<h1 id="text"></h1><button onclick="next()">Next</button>`;
-    typeText();
-}
-
-function typeText() {
-    let text = messages[index];
-    let i = 0;
-    let display = "";
-
-    function typing() {
-        if (i < text.length) {
-            display += text[i];
-            document.getElementById("text").innerHTML = display;
-            i++;
-            setTimeout(typing, 35);
-        }
-    }
-    typing();
-}
-
-function next() {
-    index++;
-    if (index < messages.length) {
-        typeText();
-    } else {
-        finalLetter();
-    }
-}
-
-// ===== FINAL LETTER (STRONGER) =====
-function finalLetter() {
+function no(){
     document.getElementById("main").innerHTML = `
-    <h2>Final Message 💌</h2>
-    <p style="line-height:1.7">
-    I just want you to know this wasn’t random.<br><br>
-    I actually put time into this because you matter to me.<br><br>
-    I’m really grateful for you — for your presence, your energy, and the way you exist in my life.<br><br>
-    I hope this year brings you peace, happiness, and everything you deserve.<br><br>
-    And no matter what happens,<br>
-    just know… you’re appreciated more than you think.<br><br>
-    Happy Birthday ❤️<br><br>
+    <h2>Hmm okay 😌</h2>
+    <p>But I think you might still say yes later...</p>
+    <button onclick="yes()">Actually yes</button>
+    `;
+}
+
+function yes(){
+    story();
+}
+
+// ---------- STORY ----------
+function story(){
+    document.getElementById("main").innerHTML = `
+    <h2>...</h2>
+    <p style="line-height:1.6">
+    I knew you would say yes 😌<br><br>
+
+    You’re actually one of the most special people I’ve met.<br><br>
+
+    My first Chinese friend — and honestly one of the realest ones too.<br><br>
+
+    Playing Mobile Legends with you, joking around, those small moments… they matter more than you think.<br><br>
+
+    You’re really one of a kind.<br><br>
+
+    I’m grateful for you — not in a dramatic way, just real appreciation.<br><br>
+
+    Happy Birthday 🎂 and I love you gurl<br><br>
+
     — Tenzin
     </p>
+    <button onclick="final()">Next</button>
+    `;
+}
+
+// ---------- FINAL SURPRISE ----------
+function final(){
+    document.getElementById("main").innerHTML = `
+    <h2>One last surprise 👀</h2>
+    <p>If you’re reading this… you completed everything.</p>
+    <p>You didn’t just click through — you actually went through it.</p>
+    <p>That means something.</p>
+    <h3>Happy Birthday again ❤️</h3>
     `;
 }
 
 </script>
+
+</body>
+</html>
