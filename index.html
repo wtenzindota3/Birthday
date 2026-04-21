@@ -1,11 +1,9 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>For You 🎂</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <style>
 body{
     margin:0;
@@ -15,60 +13,71 @@ body{
     text-align:center;
     overflow:hidden;
 }
-
 .container{
     position:absolute;
     top:50%;
     left:50%;
     transform:translate(-50%,-50%);
     width:90%;
+    max-width:500px;
 }
-
 button{
-    padding:10px 18px;
+    padding:12px 24px;
     margin:10px;
     border:none;
-    border-radius:20px;
+    border-radius:25px;
     cursor:pointer;
+    font-size:16px;
+    background:#ff3366;
+    color:white;
 }
-
+button:hover{
+    background:#ff6699;
+}
 input{
-    padding:10px;
-    border-radius:10px;
-}
-
-.heart{
-    position:absolute;
-    font-size:30px;
-    cursor:pointer;
-}
-
-img{
-    width:200px;
+    padding:12px;
     border-radius:12px;
-    margin-top:10px;
+    width:80%;
+    max-width:300px;
+    font-size:16px;
+}
+.heart, .target, .balloon{
+    position:absolute;
+    font-size:40px;
+    cursor:pointer;
+    user-select:none;
+    transition: all 0.3s;
+}
+.balloon{
+    font-size:50px;
+    animation: float 4s linear forwards;
+}
+@keyframes float {
+    0% { transform: translateY(100vh); }
+    100% { transform: translateY(-100px); }
+}
+img{
+    width:220px;
+    border-radius:16px;
+    margin:15px 0;
 }
 </style>
-
 </head>
-
 <body>
-
 <audio autoplay loop>
     <source src="music.mp3" type="audio/mpeg">
 </audio>
 
 <div class="container" id="main">
     <h2>Enter Password 🔐</h2>
-    <input type="password" id="pass"><br>
+    <input type="password" id="pass"><br><br>
     <button onclick="check()">Enter</button>
 </div>
 
 <script>
-
+// ---------------- PASSWORD ----------------
 const password = "2142006";
 
-// ---------------- PASSWORD ----------------
 function check(){
     if(document.getElementById("pass").value === password){
         game1();
@@ -77,60 +86,166 @@ function check(){
     }
 }
 
-// ---------------- GAME 1 ----------------
+// ---------------- GAME 1: Find the Hidden Number (FIXED) ----------------
 function game1(){
-    document.getElementById("main").innerHTML =
-    "<h2>Level 1 ❤️</h2><p>Catch the heart</p>";
+    document.getElementById("main").innerHTML = `
+        <h2>Level 1 🔢</h2>
+        <p>Click the <strong>correct number</strong> before time runs out!<br>
+        (It's your birthday date...)</p>
+        <p id="timer" style="font-size:22px;color:#ffcc00;">Time: 15s</p>
+    `;
 
-    let heart = document.createElement("div");
-    heart.className = "heart";
-    heart.innerHTML = "❤️";
-    document.body.appendChild(heart);
+    let timeLeft = 15;
+    const timerEl = document.getElementById("timer");
 
-    let interval = setInterval(()=>{
-        heart.style.top = Math.random()*window.innerHeight+"px";
-        heart.style.left = Math.random()*window.innerWidth+"px";
-    },800);
+    const timer = setInterval(() => {
+        timeLeft--;
+        timerEl.textContent = `Time: ${timeLeft}s`;
+        if(timeLeft <= 0){
+            clearInterval(timer);
+            alert("Time's up! 😅 Try again.");
+            game1(); // restart game 1
+        }
+    }, 1000);
 
-    setTimeout(()=>{ clearInterval(interval); },18000);
+    // FIXED: 21 is now GUARANTEED to appear exactly once
+    let numbers = [];
+    for(let i = 0; i < 7; i++){
+        numbers.push(Math.floor(Math.random()*30) + 1);
+    }
+    numbers.push(21);                    // guaranteed correct number
+    numbers.sort(() => Math.random() - 0.5); // shuffle
 
-    heart.onclick = ()=>{
-        heart.remove();
-        game2();
-    };
+    numbers.forEach(num => {
+        let target = document.createElement("div");
+        target.className = "target";
+        target.innerHTML = num;
+        target.style.color = "#ff3366";
+        target.style.fontSize = "35px";
+        target.style.top = Math.random()*70 + 20 + "vh";
+        target.style.left = Math.random()*80 + 10 + "vw";
+
+        document.body.appendChild(target);
+
+        // Move randomly
+        let moveInterval = setInterval(() => {
+            target.style.top = Math.random()*70 + 20 + "vh";
+            target.style.left = Math.random()*80 + 10 + "vw";
+        }, 900);
+
+        target.onclick = () => {
+            if(num === 21){
+                clearInterval(timer);
+                document.querySelectorAll('.target').forEach(t => t.remove());
+                alert("✅ Correct! You found 21 🎉");
+                game2();
+            } else {
+                target.style.transform = "scale(0.3)";
+                target.style.opacity = "0";
+                setTimeout(() => target.remove(), 300);
+            }
+        };
+    });
 }
 
-// ---------------- GAME 2 ----------------
+// ---------------- GAME 2: Balloon Popper ----------------
 function game2(){
     document.getElementById("main").innerHTML = `
-    <h2>Level 2 😏</h2>
-    <p>Who carries when we play Mobile Legends?</p>
-    <button onclick="wrong()">You</button>
-    <button onclick="photoQ()">Us 😎</button>
+        <h2>Level 2 🎈</h2>
+        <p>Pop all the <strong>red hearts</strong> before they float away!</p>
+        <p id="score">Popped: 0 / 5</p>
+    `;
+
+    let popped = 0;
+    const needed = 5;
+    const scoreEl = document.getElementById("score");
+
+    function createBalloon(){
+        if(popped >= needed) return;
+
+        let balloon = document.createElement("div");
+        balloon.className = "balloon";
+        balloon.innerHTML = Math.random() > 0.5 ? "❤️" : "🎈";
+        balloon.style.left = Math.random() * 85 + "vw";
+        balloon.style.color = balloon.innerHTML === "❤️" ? "#ff3366" : "#66ccff";
+
+        document.body.appendChild(balloon);
+
+        balloon.onclick = () => {
+            if(balloon.innerHTML === "❤️"){
+                popped++;
+                scoreEl.textContent = `Popped: ${popped} / ${needed}`;
+                balloon.style.transition = "all 0.2s";
+                balloon.style.transform = "scale(0.2) rotate(30deg)";
+                balloon.style.opacity = "0";
+                
+                setTimeout(() => balloon.remove(), 200);
+
+                if(popped >= needed){
+                    setTimeout(() => {
+                        document.querySelectorAll('.balloon').forEach(b => b.remove());
+                        alert("Amazing! All hearts caught 💕");
+                        game3();
+                    }, 400);
+                }
+            } else {
+                balloon.remove();
+                alert("Wrong balloon! Only red hearts 😏");
+            }
+        };
+
+        // Auto remove if not clicked
+        setTimeout(() => {
+            if(balloon.parentNode) balloon.remove();
+        }, 4500);
+    }
+
+    // Spawn balloons
+    let spawn = setInterval(() => {
+        if(popped < needed) createBalloon();
+        else clearInterval(spawn);
+    }, 800);
+
+    // Initial balloons
+    for(let i = 0; i < 3; i++) setTimeout(createBalloon, i*600);
+}
+
+// ---------------- GAME 3: Quick Choice ----------------
+function game3(){
+    document.getElementById("main").innerHTML = `
+        <h2>Level 3 😏</h2>
+        <p>Be honest...</p>
+        <p style="margin:25px 0; font-size:18px;">
+            When we play Mobile Legends together, who actually carries the team?
+        </p>
+        <button onclick="wrongChoice()">You carry me</button>
+        <button onclick="goodChoice()">We carry each other 😎</button>
     `;
 }
 
-function wrong(){
-    alert("Try again 😂");
+function wrongChoice(){
+    alert("Haha nice try 😂 Try again!");
+    game3();
+}
+
+function goodChoice(){
+    alert("Correct answer! You're learning fast 😉");
+    photoQ();
 }
 
 // ---------------- PHOTO QUESTION ----------------
 function photoQ(){
     document.getElementById("main").innerHTML = `
-    <h2>Quick question 😏</h2>
-    <p>Can you please send me a photo of yours?</p>
-
-    <button onclick="yesPhoto()">Yes</button>
-    <button onclick="noPhoto()">No</button>
-
-    <p id="react"></p>
+        <h2>Quick question 😏</h2>
+        <p>Can you please send me a photo of yours?</p>
+        <button onclick="yesPhoto()">Yes</button>
+        <button onclick="noPhoto()">No</button>
+        <p id="react"></p>
     `;
 }
 
-// ONLY SHOWS REACTION, DOES NOT AUTO SKIP
 function noPhoto(){
-    document.getElementById("react").innerHTML =
-    "Hmm 😌 okay okay";
+    document.getElementById("react").innerHTML = "Hmm 😌 okay okay";
 }
 
 function yesPhoto(){
@@ -140,43 +255,32 @@ function yesPhoto(){
 // ---------------- STORY ----------------
 function story(){
     document.getElementById("main").innerHTML = `
-    <h2>...</h2>
-
-    <img src="photo5.jpg">
-
-    <p style="line-height:1.6">
-    The prev things were just to waste your time.<br><br>
-    
-    Anyways, You’re actually one of the most real people I’ve met.<br><br>
-
-    My first Chinese friend and honestly one of a kind.<br><br>
-
-    Playing Mobile Legends with you, joking, losing, winning… it’s always fun.<br><br>
-
-    I’m genuinely grateful for you.<br><br>
-
-    You make things feel lighter without even trying.<br><br>
-
-    Happy Birthday 🎂 and ILOBEYOU <3 <br><br>
-
-    — Tenzin
-    </p>
-
-    <button onclick="final()">Next</button>
+        <h2>...</h2>
+        <img src="photo5.jpg">
+        <p style="line-height:1.6">
+        The prev things were just to waste your time.<br><br>
+       
+        Anyways, You’re actually one of the most real people I’ve met.<br><br>
+        My first Chinese friend and honestly one of a kind.<br><br>
+        Playing Mobile Legends with you, joking, losing, winning… it’s always fun.<br><br>
+        I’m genuinely grateful for you.<br><br>
+        You make things feel lighter without even trying.<br><br>
+        Happy Birthday 🎂 and ILOBEYOU <3 <br><br>
+        — Tenzin
+        </p>
+        <button onclick="final()">Next</button>
     `;
 }
 
 // ---------------- FINAL ----------------
 function final(){
     document.getElementById("main").innerHTML = `
-    <h2>Final Message 💌</h2>
-    <p>You went through everything properly.</p>
-    <p>That actually means something.</p>
-    <h3>You’re appreciated ❤️</h3>
+        <h2>Final Message 💌</h2>
+        <p>You went through everything properly.</p>
+        <p>That actually means something.</p>
+        <h3>You’re appreciated ❤️</h3>
     `;
 }
-
 </script>
-
 </body>
 </html>
